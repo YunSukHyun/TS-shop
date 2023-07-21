@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { get, getDatabase, ref } from "firebase/database";
-
+import { get, getDatabase, ref, set } from "firebase/database";
+import { v4 as uuid } from "uuid";
 import {
   getAuth,
   signInWithPopup,
@@ -9,6 +9,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { UserWithAdminCheck } from "../components/context/AuthContext";
+import { Product } from "../pages/NewProduct";
 
 // firebase 로직을 컴포넌트와 독립적으로 분리시킨다.
 const firebaseConfig = {
@@ -46,10 +47,29 @@ const adminUser = async (user: UserWithAdminCheck) => {
   return get(ref(database, "admins")).then((snapshot) => {
     if (snapshot.exists()) {
       const admins = snapshot.val();
-      console.log(admins);
       const isAdmin = admins.includes(user.uid);
       return { ...user, isAdmin };
     }
     return user;
+  });
+};
+
+export const addNewProduct = (product: Product, image: string) => {
+  const id = uuid();
+  return set(ref(database, `products/${id}`), {
+    ...product,
+    id,
+    price: product.price,
+    image,
+    options: product.options.split(","),
+  });
+};
+
+export const getProducts = async () => {
+  return await get(ref(database, "products")).then((snapshot) => {
+    if (snapshot.exists()) {
+      return Object.values(snapshot.val());
+    }
+    return [];
   });
 };

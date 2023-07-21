@@ -22,7 +22,6 @@ export const AuthContextProvider = ({
 
   useEffect(() => {
     onUserStateChange((user) => {
-      console.log(user);
       setUser(user);
     });
   }, []);

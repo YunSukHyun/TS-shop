@@ -1,6 +1,6 @@
 type ButtonProps = {
   text: string;
-  onClick: () => void;
+  onClick: (e: React.FormEvent) => void;
 };
 const Button = ({ text, onClick }: ButtonProps) => {
   return (

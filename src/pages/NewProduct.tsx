@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { uploadImage } from "../api/uploader";
+import Button from "../components/ui/Button";
+import { addNewProduct } from "../api/firebase";
 
-type Product = {
+export type Product = {
   title: string;
   price: number;
   category: string;
@@ -16,6 +19,9 @@ const NewProduct = () => {
     options: "",
   });
   const [file, setFile] = useState<File | null>();
+  const [isUploading, setIsUploading] = useState(false);
+  const [success, setSuccess] = useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target;
     if (name === "file") {
@@ -24,11 +30,32 @@ const NewProduct = () => {
     }
     setProduct((product) => ({ ...product, [name]: value }));
   };
-  const handleSubmit = (e: React.FormEvent) => {};
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUploading(true);
+    uploadImage(file as File)
+      ?.then((url) => {
+        addNewProduct(product, url).then(() => {
+          setSuccess("성공적으로 제품이 추가되었습니다.");
+          setTimeout(() => {
+            setSuccess("");
+          }, 4000);
+        });
+      })
+      .finally(() => setIsUploading(false));
+  };
   return (
-    <section>
-      {file && <img src={URL.createObjectURL(file)} alt="" />}
-      <form onSubmit={handleSubmit}>
+    <section className="w-full text-center">
+      <h2 className="text-2xl font-bold my-4">New Product enroll</h2>
+      {true && <p className="my-2">✅ hmm{success}</p>}
+      {file && (
+        <img
+          className="w-96 mx-auto mb-2"
+          src={URL.createObjectURL(file)}
+          alt=""
+        />
+      )}
+      <form className="flex flex-col px-12">
         <input
           type="file"
           accept="images/*"
@@ -75,6 +102,10 @@ const NewProduct = () => {
           placeholder="옵션들(콤마(,)로 구분)"
           required
           onChange={handleChange}
+        />
+        <Button
+          text={isUploading ? "업로드 중..." : "제품 등록하기"}
+          onClick={handleSubmit}
         />
       </form>
     </section>
