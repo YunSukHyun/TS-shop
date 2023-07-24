@@ -3,7 +3,8 @@ import { FaPencil } from "react-icons/fa6";
 import { LiaShoppingBagSolid } from "react-icons/lia";
 import UserInfo from "./UserInfo";
 import Button from "./ui/Button";
-import { useAuthContext } from "./context/AuthContext";
+import { useAuthContext } from "../context/AuthContext";
+import CartStatus from "./CartStatus";
 
 const Navbar = () => {
   const authContext = useAuthContext();
@@ -17,7 +18,11 @@ const Navbar = () => {
       </Link>
       <nav className="flex items-center gap-4 font-semibold">
         <Link to="/products">Products</Link>
-        <Link to="/carts">Carts</Link>
+        {user && (
+          <Link to="/carts">
+            <CartStatus />
+          </Link>
+        )}
         {user && user.isAdmin && (
           <Link to="/products/new" className="text-2xl">
             <FaPencil />

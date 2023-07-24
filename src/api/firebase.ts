@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { get, getDatabase, ref, set } from "firebase/database";
+import { get, getDatabase, ref, remove, set } from "firebase/database";
 import { v4 as uuid } from "uuid";
 import {
   getAuth,
@@ -8,8 +8,8 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { UserWithAdminCheck } from "../components/context/AuthContext";
-import { Product } from "../pages/NewProduct";
+import { UserWithAdminCheck } from "../context/AuthContext";
+import { CartProduct, Product } from "../pages/NewProduct";
 
 // firebase 로직을 컴포넌트와 독립적으로 분리시킨다.
 const firebaseConfig = {
@@ -72,4 +72,26 @@ export const getProducts = async () => {
     }
     return [];
   });
+};
+
+export const getCart = async (userId: string | undefined | null) => {
+  return get(ref(database, `cart/${userId}`)).then((snapshot) => {
+    const items = snapshot.val() || {};
+    console.log(items);
+    return Object.values(items);
+  });
+};
+
+export const addOrUpdateToCart = async (
+  userId: string | null | undefined,
+  product: CartProduct
+) => {
+  return set(ref(database, `cart/${userId}/${product.id}`), product);
+};
+
+export const removeFromCart = async (
+  userId: string | null | undefined,
+  productId: string
+) => {
+  return remove(ref(database, `cart/${userId}/${productId}`));
 };

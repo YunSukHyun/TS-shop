@@ -1,13 +1,16 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { login, logout, onUserStateChange } from "../../api/firebase";
+import { login, logout, onUserStateChange } from "../api/firebase";
 import { User } from "firebase/auth";
 
 type ThemeContextProviderProps = {
   children: React.ReactNode;
 };
 
+type None = null | undefined;
+
 type AuthContextValue = {
-  user: UserWithAdminCheck | null | undefined;
+  user: UserWithAdminCheck | None;
+  uid: string | None;
   login: () => void;
   logout: () => void;
 };
@@ -26,7 +29,9 @@ export const AuthContextProvider = ({
     });
   }, []);
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, uid: user && user.uid, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
