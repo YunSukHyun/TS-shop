@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import { BsCart4 } from "react-icons/bs";
-import { getCart } from "../api/firebase";
-import { useAuthContext } from "../context/AuthContext";
+import useCart from "../hooks/useCart";
+
 const CartStatus = () => {
-  const { uid } = useAuthContext()!;
-  const { data: products } = useQuery(["carts"], () => getCart(uid));
+  const {
+    cartQuery: { data: products },
+  } = useCart();
   return (
     <div className="relative">
       <BsCart4 className="text-4xl" />
