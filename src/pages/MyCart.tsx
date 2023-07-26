@@ -21,13 +21,16 @@ const MyCart = () => {
   const totalPrice =
     cartProducts &&
     cartProducts.reduce((prev, cur) => prev + cur.price * cur.quantity, 0);
-  console.log(products);
+
   return (
     <section className="p-4 flex flex-col">
       <p className="text-2xl text-center font-bold pb-4 border-b">My Cart</p>
       {!hasProducts && (
         <p>
-          장바구니에 상품이 없습니다.😕 <Link to="/procuts">상품 목록으로</Link>
+          장바구니에 상품이 없습니다.😕{" "}
+          <Link className="font-bold underline text-brand" to="/products">
+            상품 목록으로
+          </Link>
         </p>
       )}
       {hasProducts && (

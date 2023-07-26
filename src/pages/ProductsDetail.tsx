@@ -10,6 +10,7 @@ const ProductsDetail = () => {
     },
   } = useLocation();
   const { addOrUpdateItem } = useCart();
+  const [success, setSuccess] = useState("");
   const [selected, setSelected] = useState(options && options[0]);
   const handleSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelected(e.target.value);
@@ -24,7 +25,14 @@ const ProductsDetail = () => {
       option: selected,
       quantity: 1,
     };
-    addOrUpdateItem.mutate(product);
+    addOrUpdateItem.mutate(product, {
+      onSuccess: () => {
+        setSuccess("🛒 장바구니에 추가되었습니다.");
+        setTimeout(() => {
+          setSuccess("");
+        }, 3000);
+      },
+    });
   };
   return (
     <>
@@ -57,6 +65,7 @@ const ProductsDetail = () => {
                 ))}
             </select>
           </div>
+          {success && <p className="my-2">{success}</p>}
           <Button text="장바구니 추가" onClick={handleClick} />
         </div>
       </section>
